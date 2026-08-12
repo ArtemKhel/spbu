@@ -2,7 +2,7 @@ use std::{borrow::Borrow, collections::HashMap, hash::Hash};
 
 /// Strange append only HashMap that stores entries as:
 /// - single kv pair if only one was added
-/// - array of [`ARRAY_THRESHOLD`] kv pairs if 2..`ARRAY_THRESHOLD` was added
+/// - array of [`ARRAY_THRESHOLD`] kv pairs if 2..=`ARRAY_THRESHOLD` was added
 /// - [`std::collections::HashMap`] if >`ARRAY_THRESHOLD` was added
 #[derive(Debug)]
 pub struct StrangeMap<K, V> {
