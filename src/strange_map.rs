@@ -107,7 +107,7 @@ where K: Eq + Hash
     pub fn contains_key<Q>(&self, key: &Q) -> bool
     where
         Q: Eq + Hash + ?Sized, // can hash and compare keys, allow types with unknown at comptime size (str, [T])
-        K: Borrow<Q>,  // map's key type K can be viewed as &Q (allow lookup of String keys with &str)
+        K: Borrow<Q>,          // map's key type K can be viewed as &Q (allow lookup of String keys with &str)
     {
         match &self.storage {
             Storage::Empty => false,
