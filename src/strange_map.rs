@@ -2,7 +2,7 @@ use std::{borrow::Borrow, collections::HashMap, hash::Hash};
 
 /// Strange append only HashMap that stores entries as:
 /// - single kv pair if only one was added
-/// - array of [`ARRAY_THRESHOLD`] kv pairs if 2 - `ARRAY_THRESHOLD` was added
+/// - array of [`ARRAY_THRESHOLD`] kv pairs if 2..`ARRAY_THRESHOLD` was added
 /// - [`std::collections::HashMap`] if >`ARRAY_THRESHOLD` was added
 #[derive(Debug)]
 pub struct StrangeMap<K, V> {
@@ -11,6 +11,9 @@ pub struct StrangeMap<K, V> {
 }
 
 const ARRAY_THRESHOLD: usize = 5;
+const _: () = {
+    assert!(ARRAY_THRESHOLD >= 2);
+};
 
 #[derive(Debug)]
 enum Storage<K, V> {
@@ -65,7 +68,10 @@ where K: Eq + Hash
             }
             Storage::Single(entry) => {
                 self.len = 2;
-                self.storage = Storage::Array([Some(entry), Some(Entry { key, value }), None, None, None]);
+                let mut entries = std::array::from_fn(|_| None);
+                entries[0] = Some(entry);
+                entries[1] = Some(Entry { key, value });
+                self.storage = Storage::Array(entries);
                 None
             }
             Storage::Array(mut entries) => {
